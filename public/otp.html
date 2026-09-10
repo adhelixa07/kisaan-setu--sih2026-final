@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify phone - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-shell">
+      <aside class="auth-sidebar">
+        <span class="kicker">Phone verification</span>
+        <h1>Verify your number.</h1>
+        <p>Enter the one-time code sent to your mobile number.</p>
+        <ul class="mini-list">
+          <li>Secure mobile identity</li>
+          <li>Farmer or buyer profile access</li>
+          <li>Offer and sourcing communication</li>
+        </ul>
+      </aside>
+      <section class="auth-form-wrap">
+        <span class="kicker">OTP</span>
+        <h2>Enter verification code</h2>
+        <p>Code sent to +91 98765 43210</p>
+        <form data-validate>
+          <div class="form-group">
+            <label for="otp">One-time code</label>
+            <input class="form-control" type="text" id="otp" required placeholder="123456" />
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" type="submit">Verify phone</button>
+            <button class="btn btn-ghost" type="button">Resend code</button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

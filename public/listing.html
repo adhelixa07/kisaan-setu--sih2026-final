@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listing detail - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a class="active" href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <div class="container page-title-grid">
+        <div>
+          <span class="kicker">Produce listing</span>
+          <h1>Tomato crop</h1>
+          <p>Farm: Ramesh Organic Farm · Nashik, Maharashtra</p>
+        </div>
+        <div class="row">
+          <a class="btn btn-secondary" href="listings.html">Back to listings</a>
+          <a class="btn btn-primary" href="#offer">Make offer</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container detail-layout">
+        <div class="detail-gallery">
+          <div class="detail-gallery-image">🌿</div>
+          <div class="detail-gallery-thumbs">
+            <div class="thumb">Fresh</div>
+            <div class="thumb">Grade A</div>
+            <div class="thumb">Quality</div>
+            <div class="thumb">Pickup</div>
+          </div>
+        </div>
+        <article class="detail-copy">
+          <span class="badge accepted">Verified Farmer</span>
+          <h1>Fresh red tomato</h1>
+          <div class="detail-price">₹28 / kg</div>
+          <p class="listing-meta">Available window: 12 Sep - 15 Sep · 40 quintals available</p>
+          <ul class="detail-list">
+            <li><strong>Crop:</strong> Tomato</li>
+            <li><strong>Quality grade:</strong> Grade A</li>
+            <li><strong>Location:</strong> Nashik, Maharashtra</li>
+            <li><strong>Pickup point:</strong> Farm gate, Plot 18, Nashik</li>
+            <li><strong>Harvest date:</strong> 12 Sep 2026</li>
+            <li><strong>Farmer:</strong> Ramesh Kumar</li>
+            <li><strong>Rating:</strong> 4.8 / 5</li>
+          </ul>
+          <div class="row">
+            <a class="btn btn-primary" href="#offer">Submit offer</a>
+            <a class="btn btn-secondary" href="messages.html">Message farmer</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="detail-layout">
+          <section class="chart-card">
+            <h3>Negotiation thread</h3>
+            <div class="message-thread">
+              <div class="thread-item">
+                <div class="thread-avatar">RK</div>
+                <div class="thread-message">
+                  <strong>Ramesh Kumar</strong>
+                  <p>We have a fresh harvest ready for delivery this week.</p>
+                </div>
+              </div>
+              <div class="thread-item">
+                <div class="thread-avatar">B</div>
+                <div class="thread-message">
+                  <strong>Buyer</strong>
+                  <p>Can you offer a volume discount for 20 quintals?</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="chart-card" id="offer">
+            <h3>Place offer</h3>
+            <form data-validate>
+              <div class="form-group">
+                <label for="price">Offer price per kg</label>
+                <input class="form-control" type="number" id="price" required placeholder="₹25" />
+              </div>
+              <div class="form-group">
+                <label for="quantity">Quantity required</label>
+                <input class="form-control" type="number" id="quantity" required placeholder="20 quintals" />
+              </div>
+              <div class="form-group">
+                <label for="note">Message</label>
+                <textarea class="form-textarea" id="note" required placeholder="Offer details"></textarea>
+              </div>
+              <button class="btn btn-primary" type="submit">Send inquiry</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

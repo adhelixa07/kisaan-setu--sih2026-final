@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a class="active" href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <div class="container page-title-grid">
+        <div>
+          <span class="kicker">Messages</span>
+          <h1>Conversation</h1>
+          <p>Fresh tomatoes · Ramesh Kumar · Urban Fresh Foods.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <section class="message-thread">
+          <div class="thread-item">
+            <div class="thread-avatar">RK</div>
+            <div class="thread-message">
+              <strong>Ramesh Kumar</strong>
+              <p>Harvest is ready for pickup on Monday morning. We can arrange a truck.</p>
+            </div>
+          </div>
+          <div class="thread-item">
+            <div class="thread-avatar">U</div>
+            <div class="thread-message">
+              <strong>Urban Fresh Foods</strong>
+              <p>Great. We will send a vehicle tomorrow morning.</p>
+            </div>
+          </div>
+          <div class="thread-item">
+            <div class="thread-avatar">RK</div>
+            <div class="thread-message">
+              <strong>Ramesh Kumar</strong>
+              <p>Please confirm the quantity before loading.</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">Reply</label>
+            <textarea class="form-textarea" id="message" placeholder="Type a message"></textarea>
+          </div>
+          <button class="btn btn-primary" type="button">Send message</button>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

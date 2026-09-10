@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kisaan Setu Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="signup.html">Create account</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-shell">
+      <aside class="auth-sidebar">
+        <span class="kicker">Kisaan Setu</span>
+        <h1>Welcome back.</h1>
+        <p>Farm sourcing begins with trust, clarity, and direct communication.</p>
+        <ul class="mini-list">
+          <li>View fresh produce listings</li>
+          <li>Track offers and orders</li>
+          <li>Respond to farmers or buyers</li>
+        </ul>
+      </aside>
+      <section class="auth-form-wrap">
+        <span class="kicker">Account access</span>
+        <h2>Login</h2>
+        <p>Use your phone number or email to continue.</p>
+        <form data-validate>
+          <div class="form-group">
+            <label for="email">Email or phone</label>
+            <input class="form-control" type="text" id="email" required placeholder="farmer@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" id="password" required placeholder="••••••••" />
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" type="submit">Login securely</button>
+            <a class="form-link" href="signup.html">Create account</a>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

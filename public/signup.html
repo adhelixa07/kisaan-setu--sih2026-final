@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create account - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-shell">
+      <aside class="auth-sidebar">
+        <span class="kicker">Kisaan Setu</span>
+        <h1>Join the marketplace.</h1>
+        <p>Choose your role and start sourcing or listing produce directly.</p>
+        <ul class="mini-list">
+          <li>Farmer listing access</li>
+          <li>Buyer offer and sourcing flow</li>
+          <li>Market negotiation and order tracking</li>
+        </ul>
+      </aside>
+      <section class="auth-form-wrap">
+        <span class="kicker">Create account</span>
+        <h2>Sign up</h2>
+        <div class="role-grid">
+          <div class="role-option active">
+            <div class="icon">🌾</div>
+            <h3>Farmer</h3>
+            <p>List harvest and negotiate deals.</p>
+          </div>
+          <div class="role-option">
+            <div class="icon">🛒</div>
+            <h3>Buyer</h3>
+            <p>Source produce directly from farmers.</p>
+          </div>
+        </div>
+
+        <form data-validate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Full name</label>
+              <input class="form-control" type="text" id="name" required placeholder="Ramesh Kumar" />
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone number</label>
+              <input class="form-control" type="tel" id="phone" required placeholder="+91 98765 43210" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input class="form-control" type="email" id="email" required placeholder="name@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input class="form-control" type="password" id="password" required placeholder="Create password" />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" type="submit">Create account</button>
+            <a class="form-link" href="login.html">I already have an account</a>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

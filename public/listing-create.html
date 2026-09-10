@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Listing - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a class="active" href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <div class="container page-title-grid">
+        <div>
+          <span class="kicker">Farmer listing</span>
+          <h1>Create produce listing</h1>
+          <p>Publish harvest details for buyer discovery.</p>
+        </div>
+        <div class="row">
+          <a class="btn btn-secondary" href="farmer-dashboard.html">Back to dashboard</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <section class="auth-form-wrap">
+          <form data-validate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="crop">Crop name</label>
+                <select class="form-select" id="crop" required>
+                  <option>Tomato</option>
+                  <option>Onion</option>
+                  <option>Wheat</option>
+                  <option>Chilli</option>
+                  <option>Maize</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="quality">Quality grade</label>
+                <select class="form-select" id="quality" required>
+                  <option>Grade A</option>
+                  <option>Grade B</option>
+                  <option>Grade C</option>
+                  <option>Premium</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="quantity">Quantity available</label>
+                <input class="form-control" type="number" id="quantity" required placeholder="40" />
+              </div>
+              <div class="form-group">
+                <label for="unit">Unit</label>
+                <select class="form-select" id="unit" required>
+                  <option>quintal</option>
+                  <option>kg</option>
+                  <option>ton</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="price">Price per unit</label>
+                <input class="form-control" type="number" id="price" required placeholder="28" />
+              </div>
+              <div class="form-group">
+                <label for="harvest">Harvest date</label>
+                <input class="form-control" type="date" id="harvest" required />
+              </div>
+              <div class="form-group">
+                <label for="location">Pickup location</label>
+                <input class="form-control" type="text" id="location" required placeholder="Farm gate, Nashik" />
+              </div>
+              <div class="form-group">
+                <label for="photos">Photo upload</label>
+                <input class="form-control" type="file" id="photos" multiple required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="details">Listing notes</label>
+              <textarea class="form-textarea" id="details" required placeholder="Additional harvest details"></textarea>
+            </div>
+            <div class="row">
+              <button class="btn btn-primary" type="submit">Publish listing</button>
+              <button class="btn btn-secondary" type="button">Save draft</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

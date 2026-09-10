@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a class="active" href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <div class="container page-title-grid">
+        <div>
+          <span class="kicker">Admin</span>
+          <h1>Marketplace administration</h1>
+          <p>Users, listings, moderation, commissions, and platform health.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container dashboard-layout">
+        <aside class="sidebar">
+          <div class="sidebar-title">Admin menu</div>
+          <a class="active" href="admin.html">Overview</a>
+          <a href="#">Users</a>
+          <a href="#">Listings</a>
+          <a href="#">Moderation</a>
+          <a href="#">Transactions</a>
+        </aside>
+
+        <section class="dashboard-content">
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <span class="metric-label">Users</span>
+              <div class="metric-value">284</div>
+              <p class="listing-meta">184 farmers · 100 buyers</p>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Listings</span>
+              <div class="metric-value">128</div>
+              <p class="listing-meta">22 active today</p>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Commission</span>
+              <div class="metric-value">₹34k</div>
+              <p class="listing-meta">3% of completed orders</p>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Moderation</span>
+              <div class="metric-value">03</div>
+              <p class="listing-meta">Flags pending</p>
+            </article>
+          </div>
+
+          <section class="chart-card">
+            <h3>All users</h3>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Listings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ramesh Kumar</td>
+                    <td>Farmer</td>
+                    <td>Nashik</td>
+                    <td><span class="badge accepted">Verified</span></td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>Urban Fresh Foods</td>
+                    <td>Buyer</td>
+                    <td>Mumbai</td>
+                    <td><span class="badge accepted">Verified</span></td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>Farm Traders Co.</td>
+                    <td>Buyer</td>
+                    <td>Pune</td>
+                    <td><span class="badge pending">Pending</span></td>
+                    <td>0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="chart-card">
+            <h3>Platform transactions</h3>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Net value</th>
+                    <th>Commission</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>KIS-2041</td>
+                    <td>₹18,000</td>
+                    <td>₹540</td>
+                    <td>10 Sep 2026</td>
+                    <td><span class="badge accepted">Logged</span></td>
+                  </tr>
+                  <tr>
+                    <td>KIS-2042</td>
+                    <td>₹14,000</td>
+                    <td>₹420</td>
+                    <td>09 Sep 2026</td>
+                    <td><span class="badge pending">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

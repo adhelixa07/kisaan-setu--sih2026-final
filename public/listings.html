@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Produce - Kisaan Setu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-label="Kisaan Setu"></span>
+        <span class="brand-wordmark">
+          <strong>Kisaan Setu</strong>
+          <small>Farm Connect</small>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a class="active" href="listings.html">Browse Produce</a>
+        <a href="farmer-dashboard.html">Farmer</a>
+        <a href="buyer-dashboard.html">Buyer</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Notifications">☔</button>
+        <a class="btn btn-secondary" href="login.html">Login</a>
+        <button class="mobile-menu" aria-label="Open Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-title">
+      <div class="container page-title-grid">
+        <div>
+          <span class="kicker">Marketplace</span>
+          <h1>Browse Produce</h1>
+          <p>Fresh harvest from verified farmers across the region.</p>
+        </div>
+        <div class="row">
+          <a class="btn btn-primary" href="signup.html">Become a buyer</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-strip">
+          <select class="form-select">
+            <option>Crop type</option>
+            <option>Tomato</option>
+            <option>Onion</option>
+            <option>Wheat</option>
+          </select>
+          <select class="form-select">
+            <option>State</option>
+            <option>Maharashtra</option>
+            <option>Punjab</option>
+            <option>Karnataka</option>
+          </select>
+          <select class="form-select">
+            <option>Quality grade</option>
+            <option>Premium</option>
+            <option>Grade A</option>
+            <option>Grade B</option>
+          </select>
+          <input class="form-control" type="text" placeholder="Search by location" />
+          <button class="btn btn-primary" type="button">Apply filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="card-grid">
+          <article class="listing-card">
+            <div class="listing-image"><span>🌾</span></div>
+            <div class="listing-card-body">
+              <span class="badge accepted">Grade A</span>
+              <h3>Fresh tomatoes</h3>
+              <div class="listing-meta">Nashik, Maharashtra · 40 quintal</div>
+              <div class="listing-price">₹28 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+          <article class="listing-card">
+            <div class="listing-image"><span>🧅</span></div>
+            <div class="listing-card-body">
+              <span class="badge">Grade B</span>
+              <h3>Red onion</h3>
+              <div class="listing-meta">Nanded, Maharashtra · 60 quintal</div>
+              <div class="listing-price">₹24 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+          <article class="listing-card">
+            <div class="listing-image"><span>🌽</span></div>
+            <div class="listing-card-body">
+              <span class="badge pending">Premium</span>
+              <h3>Maize</h3>
+              <div class="listing-meta">Solapur, Maharashtra · 28 quintal</div>
+              <div class="listing-price">₹22 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+          <article class="listing-card">
+            <div class="listing-image"><span>🌶️</span></div>
+            <div class="listing-card-body">
+              <span class="badge accepted">Grade A</span>
+              <h3>Green chilli</h3>
+              <div class="listing-meta">Warangal, Telangana · 18 quintal</div>
+              <div class="listing-price">₹35 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+          <article class="listing-card">
+            <div class="listing-image"><span>🌾</span></div>
+            <div class="listing-card-body">
+              <span class="badge">Grade B</span>
+              <h3>Wheat</h3>
+              <div class="listing-meta">Ludhiana, Punjab · 70 quintal</div>
+              <div class="listing-price">₹21 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+          <article class="listing-card">
+            <div class="listing-image"><span>🥬</span></div>
+            <div class="listing-card-body">
+              <span class="badge accepted">Fresh</span>
+              <h3>Cauliflower</h3>
+              <div class="listing-meta">Dehradun, Uttarakhand · 12 quintal</div>
+              <div class="listing-price">₹26 / kg</div>
+              <div class="hero-actions">
+                <a class="btn btn-secondary" href="listing.html">View details</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">© 2026 Kisaan Setu. All rights reserved.</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
