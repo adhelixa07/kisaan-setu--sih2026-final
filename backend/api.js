@@ -42,6 +42,7 @@ function getCurrentUser() {
 async function request(path, { method = 'GET', body, headers = {}, isForm = false } = {}) {
   const token = getToken();
   const finalHeaders = { ...headers };
+  finalHeaders['X-Locale'] = localStorage.getItem('ks_locale') || 'en';
   if (token) finalHeaders.Authorization = `Bearer ${token}`;
 
   let finalBody = body;

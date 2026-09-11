@@ -15,9 +15,13 @@
   "home.hero.cta.browse_listings": "তালিকা দেখুন",
 
   "lang.select.title": "আপনার ভাষা নির্বাচন করুন",
+  "lang.select.subtitle": "আপনার অভিজ্ঞতার জন্য পছন্দের ভাষা নির্বাচন করুন।",
   "lang.hi": "हिंदी",
+  "lang.hi.detail": "হিন্দি",
   "lang.en": "English",
+  "lang.en.detail": "ইংরেজি",
   "lang.bn": "বাংলা",
+  "lang.bn.detail": "বাংলা",
 
   "role.select.title": "আপনি কিষাণ সেতু কীভাবে ব্যবহার করবেন?",
   "role.buyer": "ক্রেতা",
@@ -256,6 +260,7 @@
   "common.confirm": "নিশ্চিত করুন",
   "common.back": "পেছনে",
   "common.next": "পরবর্তী",
+  "common.continue": "এগিয়ে যান",
   "common.close": "বন্ধ করুন",
   "common.required": "আবশ্যক",
   "common.optional": "ঐচ্ছিক",

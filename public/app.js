@@ -5,6 +5,99 @@ const SUPPORTED_LOCALES = {
   bn: { label: 'Bengali', native: 'বাংলা', direction: 'ltr' }
 };
 
+let activeTranslations = {};
+let activeFallbackTranslations = {};
+let originalDocumentTitle = '';
+
+function installLocaleFetchHeader() {
+  if (!window.fetch || window.fetch.__localeAware) return;
+
+  const originalFetch = window.fetch.bind(window);
+  const localeAwareFetch = (input, init = {}) => {
+    const url = typeof input === 'string' ? input : input.url;
+    if (!url.includes('/api/')) return originalFetch(input, init);
+
+    const headers = new Headers(init.headers || {});
+    headers.set('X-Locale', getStoredLocale() || detectLocaleFromBrowser());
+    return originalFetch(input, { ...init, headers });
+  };
+
+  localeAwareFetch.__localeAware = true;
+  window.fetch = localeAwareFetch;
+}
+
+const STATIC_LITERAL_TRANSLATIONS = {
+  bn: {
+    'kisaan setu': 'কিষাণ সেতু',
+    'farm connect': 'ফার্ম কানেক্ট',
+    'login': 'লগ ইন করুন',
+    'log in': 'লগ ইন করুন',
+    'browse produce': 'ফসল ব্রাউজ করুন',
+    'marketplace': 'মার্কেটপ্লেস',
+    'fresh harvest from verified farmers across the region.': 'অঞ্চলজুড়ে যাচাইকৃত কৃষকদের তাজা ফসল।',
+    'become a buyer': 'ক্রেতা হিসেবে যোগ দিন',
+    'crop type': 'ফসলের ধরন',
+    'state': 'রাজ্য',
+    'quality grade': 'গুণমান গ্রেড',
+    'search by location': 'অবস্থান দিয়ে খুঁজুন',
+    'apply filters': 'ফিল্টার প্রয়োগ করুন',
+    'grade a': 'গ্রেড এ',
+    'grade b': 'গ্রেড বি',
+    'grade c': 'গ্রেড সি',
+    'premium': 'প্রিমিয়াম',
+    'fresh': 'তাজা',
+    'fresh tomatoes': 'তাজা টমেটো',
+    'red onion': 'লাল পেঁয়াজ',
+    'fresh potatoes': 'তাজা আলু',
+    'tomato': 'টমেটো',
+    'onion': 'পেঁয়াজ',
+    'maize': 'ভুট্টা',
+    'green chilli': 'কাঁচা মরিচ',
+    'wheat': 'গম',
+    'cauliflower': 'ফুলকপি',
+    'kg': 'কেজি',
+    'quintal': 'কুইন্টাল',
+    'browse produce - kisaan setu': 'ফসল ব্রাউজ করুন - কিষাণ সেতু',
+    'listing detail - kisaan setu': 'ফসলের বিস্তারিত - কিষাণ সেতু',
+    'my listings - kisaan setu': 'আমার তালিকা - কিষাণ সেতু',
+    'buyer dashboard - kisaan setu': 'ক্রেতা ড্যাশবোর্ড - কিষাণ সেতু',
+    'farmer dashboard - kisaan setu': 'কৃষক ড্যাশবোর্ড - কিষাণ সেতু',
+    'admin dashboard - kisaan setu': 'অ্যাডমিন ড্যাশবোর্ড - কিষাণ সেতু',
+    'login - kisaan setu': 'লগ ইন - কিষাণ সেতু',
+    'signup - kisaan setu': 'নিবন্ধন - কিষাণ সেতু',
+    'view details': 'বিস্তারিত দেখুন',
+    'direct sourcing': 'সরাসরি সরবরাহ',
+    'farmer dashboard': 'কৃষক ড্যাশবোর্ড',
+    'buyer dashboard': 'ক্রেতা ড্যাশবোর্ড',
+    'admin dashboard': 'অ্যাডমিন ড্যাশবোর্ড',
+    'create listing': 'তালিকা তৈরি করুন',
+    'my listings': 'আমার তালিকা',
+    'notifications': 'বিজ্ঞপ্তি',
+    'messages': 'বার্তা',
+    'profile': 'প্রোফাইল',
+    'save changes': 'পরিবর্তন সংরক্ষণ করুন',
+    'search': 'খুঁজুন',
+    'submit offer': 'অফার জমা দিন',
+    'make offer': 'অফার দিন',
+    'message farmer': 'কৃষককে বার্তা পাঠান',
+    'send message': 'বার্তা পাঠান',
+    'order history': 'অর্ডারের ইতিহাস',
+    'order records': 'অর্ডারের তথ্য',
+    'status': 'স্ট্যাটাস',
+    'quantity': 'পরিমাণ',
+    'price': 'দাম',
+    'location': 'অবস্থান',
+    'crop': 'ফসল',
+    'farmer': 'কৃষক',
+    'buyer': 'ক্রেতা',
+    'admin': 'অ্যাডমিন',
+    'platform': 'প্ল্যাটফর্ম',
+    'resources': 'রিসোর্স',
+    'company': 'কোম্পানি',
+    'support': 'সাপোর্ট'
+  }
+};
+
 function getStoredLocale() {
   try {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
@@ -30,7 +123,7 @@ function detectLocaleFromBrowser() {
 }
 
 async function loadLocale(locale) {
-  const response = await fetch(`/i18n/${locale}.json`);
+  const response = await fetch(`i18n/${locale}.json`);
   if (!response.ok) {
     throw new Error(`Unable to load locale ${locale}`);
   }
@@ -41,12 +134,40 @@ function buildLiteralLookup(fallbackTranslations, translations) {
   const lookup = new Map();
   Object.entries(fallbackTranslations || {}).forEach(([key, englishText]) => {
     if (!englishText || !translations[key]) return;
-    lookup.set(String(englishText).trim(), String(translations[key]));
+    const source = String(englishText).trim();
+    lookup.set(source, String(translations[key]));
+    lookup.set(source.toLocaleLowerCase(), String(translations[key]));
   });
   return lookup;
 }
 
+function getLiteralTranslation(source, lookup, locale) {
+  const text = String(source || '').trim();
+  const exact = lookup.get(text)
+    || lookup.get(text.toLocaleLowerCase())
+    || STATIC_LITERAL_TRANSLATIONS[locale]?.[text.toLocaleLowerCase()];
+  if (exact) return exact;
+
+  const aliases = STATIC_LITERAL_TRANSLATIONS[locale] || {};
+  let translated = text;
+  let changed = false;
+  Object.entries(aliases)
+    .sort(([left], [right]) => right.length - left.length)
+    .forEach(([english, localized]) => {
+      const escaped = english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = new RegExp(`\\b${escaped}\\b`, 'gi');
+      if (pattern.test(translated)) {
+        translated = translated.replace(pattern, localized);
+        changed = true;
+      }
+    });
+  return changed ? translated : undefined;
+}
+
 function applyI18n(translations, locale, fallbackTranslations = {}) {
+  activeTranslations = translations;
+  activeFallbackTranslations = fallbackTranslations;
+
   const all = Array.from(document.querySelectorAll('[data-i18n]'));
   all.forEach((element) => {
     const key = element.getAttribute('data-i18n');
@@ -72,13 +193,42 @@ function applyI18n(translations, locale, fallbackTranslations = {}) {
   });
 
   const lookup = buildLiteralLookup(fallbackTranslations, translations);
-  const bodies = Array.from(document.querySelectorAll('body *'));
-  bodies.forEach((element) => {
-    if (element.hasAttribute('data-i18n') || element.querySelector('[data-i18n]')) return;
-    const plain = String(element.textContent || '').trim();
-    if (!plain || plain.length < 2 || !lookup.has(plain)) return;
-    element.textContent = lookup.get(plain);
+  const translatableElements = Array.from(document.querySelectorAll('body *'));
+  translatableElements.forEach((element) => {
+    if (element.hasAttribute('data-i18n') || element.children.length > 0) return;
+
+    const source = element.dataset.i18nSource || String(element.textContent || '').trim();
+    if (!element.dataset.i18nSource && source) {
+      element.dataset.i18nSource = source;
+    }
+    const translated = getLiteralTranslation(source, lookup, locale);
+    if (source.length < 2 || !translated) return;
+    element.textContent = translated;
   });
+
+  const attributeLookup = (element, attribute, sourceAttribute) => {
+    const source = element.dataset[sourceAttribute] || element.getAttribute(attribute) || '';
+    if (!element.dataset[sourceAttribute] && source) {
+      element.dataset[sourceAttribute] = source;
+    }
+    const translated = getLiteralTranslation(source, lookup, locale);
+    if (translated) {
+      element.setAttribute(attribute, translated);
+    }
+  };
+
+  document.querySelectorAll('input[placeholder], textarea[placeholder], select[aria-label]').forEach((element) => {
+    if (element.hasAttribute('data-i18n-placeholder') || element.hasAttribute('data-i18n-aria')) return;
+    if (element.hasAttribute('placeholder')) attributeLookup(element, 'placeholder', 'i18nPlaceholderSource');
+    if (element.hasAttribute('aria-label')) attributeLookup(element, 'aria-label', 'i18nAriaSource');
+  });
+
+  const titleSource = originalDocumentTitle || document.title || '';
+  originalDocumentTitle = titleSource;
+  const translatedTitle = getLiteralTranslation(titleSource, lookup, locale);
+  if (translatedTitle) {
+    document.title = translatedTitle;
+  }
 
   const languageButton = document.getElementById('language-toggle');
   if (languageButton) {
@@ -97,28 +247,28 @@ function buildLanguageModal() {
   modal.innerHTML = `
     <div class="language-modal-backdrop"></div>
     <div class="language-modal-panel">
-      <button class="language-close" type="button" aria-label="Close">×</button>
+      <button class="language-close" type="button" aria-label="Close" data-i18n-aria="common.close">×</button>
       <div class="language-modal-header">
-        <span class="kicker">Kisaan Setu</span>
-        <h2 class="language-title">Choose your language</h2>
-        <p class="language-subtitle">Select the language you prefer for your experience.</p>
+        <span class="kicker" data-i18n="app.name">Kisaan Setu</span>
+        <h2 class="language-title" data-i18n="lang.select.title">Choose your language</h2>
+        <p class="language-subtitle" data-i18n="lang.select.subtitle">Select the language you prefer for your experience.</p>
       </div>
       <div class="language-options">
         <button class="language-option" type="button" data-locale="hi">
           <span class="language-name">हिंदी</span>
-          <span class="language-detail">Hindi</span>
+          <span class="language-detail" data-i18n="lang.hi.detail">Hindi</span>
         </button>
         <button class="language-option" type="button" data-locale="en">
           <span class="language-name">English</span>
-          <span class="language-detail">English</span>
+          <span class="language-detail" data-i18n="lang.en.detail">English</span>
         </button>
         <button class="language-option" type="button" data-locale="bn">
           <span class="language-name">বাংলা</span>
-          <span class="language-detail">Bengali</span>
+          <span class="language-detail" data-i18n="lang.bn.detail">Bengali</span>
         </button>
       </div>
       <div class="language-confirm-row">
-        <button class="btn btn-primary language-continue" type="button">Continue</button>
+        <button class="btn btn-primary language-continue" type="button" data-i18n="common.continue">Continue</button>
       </div>
     </div>
   `;
@@ -181,6 +331,9 @@ function openLanguageModal(startLocale) {
   });
 
   document.body.appendChild(modal);
+  if (Object.keys(activeTranslations).length) {
+    applyI18n(activeTranslations, selected, activeFallbackTranslations);
+  }
   modal.classList.add('language-modal-visible');
 }
 
@@ -203,7 +356,273 @@ async function bootLanguageFlow() {
   }
 }
 
+function loadRazorpayScript() {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    if (document.getElementById('razorpay-checkout-js')) {
+      const existing = document.getElementById('razorpay-checkout-js');
+      existing.addEventListener('load', () => resolve(true));
+      return;
+    }
+    const script = document.createElement('script');
+    script.id = 'razorpay-checkout-js';
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function wireFarmerRegistration() {
+  const mobileScreen = document.getElementById('mobileScreen');
+  if (!mobileScreen) return;
+
+  const otpScreen = document.getElementById('otpScreen');
+  const enamScreen = document.getElementById('enamScreen');
+  const confirmScreen = document.getElementById('confirmScreen');
+  const successScreen = document.getElementById('successScreen');
+
+  const mobileInput = document.getElementById('farmerMobile');
+  const mobileError = document.getElementById('mobileError');
+  const sendOtpBtn = document.getElementById('sendOtpBtn');
+
+  const otpInput = document.getElementById('farmerOtp');
+  const otpError = document.getElementById('otpError');
+  const demoOtpCode = document.getElementById('demoOtpCode');
+  const otpTimer = document.getElementById('otpTimer');
+  const resendOtpBtn = document.getElementById('resendOtpBtn');
+  const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+
+  const enamInput = document.getElementById('enamId');
+  const enamError = document.getElementById('enamError');
+  const enamStatus = document.getElementById('enamStatus');
+  const verifyEnamBtn = document.getElementById('verifyEnamBtn');
+  const enamProfileCard = document.getElementById('enamProfileCard');
+
+  const confirmProfileCard = document.getElementById('confirmProfileCard');
+  const farmVillage = document.getElementById('farmVillage');
+  const completeRegistrationBtn = document.getElementById('completeRegistrationBtn');
+
+  const successMessage = document.getElementById('successMessage');
+  const successProfileCard = document.getElementById('successProfileCard');
+  const startOverBtn = document.getElementById('startOverBtn');
+
+  const enamProfiles = {
+    'EN10293847': { enamId: 'EN10293847', name: 'Ramesh Kumar Yadav', state: 'Uttar Pradesh', mandi: 'Lucknow APMC', category: 'Cereals & Grains' },
+    'EN55821093': { enamId: 'EN55821093', name: 'Suresh Patel', state: 'Gujarat', mandi: 'Ahmedabad APMC', category: 'Cotton & Oilseeds' },
+    'EN77410256': { enamId: 'EN77410256', name: 'Lakshmi Reddy', state: 'Andhra Pradesh', mandi: 'Guntur APMC', category: 'Chillies & Spices' }
+  };
+
+  let otpCode = '123456';
+  let otpAttemptsLeft = 3;
+  let otpTimerRemaining = 60;
+  let otpTimerHandle = null;
+  let selectedEnam = null;
+  let currentScreen = 'mobile';
+
+  const getEnamPattern = /^EN\d{8}$/;
+  const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value);
+
+  function showScreen(screenName) {
+    currentScreen = screenName;
+    const map = {
+      mobile: mobileScreen,
+      otp: otpScreen,
+      enam: enamScreen,
+      confirm: confirmScreen,
+      success: successScreen
+    };
+
+    Object.entries(map).forEach(([key, el]) => {
+      el.hidden = key !== screenName;
+    });
+
+    const order = ['mobile', 'otp', 'enam', 'confirm'];
+    const index = order.indexOf(screenName);
+    document.querySelectorAll('[data-reg-step]').forEach((step) => {
+      const stepName = step.getAttribute('data-reg-step');
+      step.classList.toggle('active', order.indexOf(stepName) <= index && index >= 0);
+    });
+  }
+
+  function startOtpCountdown() {
+    clearInterval(otpTimerHandle);
+    otpTimerRemaining = 60;
+    otpTimerHandle = setInterval(() => {
+      otpTimerRemaining -= 1;
+      if (otpTimerRemaining <= 0) {
+        clearInterval(otpTimerHandle);
+        otpTimer.textContent = 'Code expired';
+        verifyOtpBtn.disabled = true;
+        resendOtpBtn.disabled = false;
+        return;
+      }
+      otpTimer.textContent = `Code expires in ${otpTimerRemaining}s`;
+      verifyOtpBtn.disabled = false;
+    }, 1000);
+  }
+
+  function resetOtpState() {
+    otpAttemptsLeft = 3;
+    otpCode = '123456';
+    demoOtpCode.textContent = otpCode;
+    otpInput.value = '';
+    otpError.textContent = '';
+    resendOtpBtn.disabled = false;
+    verifyOtpBtn.disabled = false;
+    startOtpCountdown();
+  }
+
+  sendOtpBtn.addEventListener('click', () => {
+    const number = mobileInput.value.replace(/\D/g, '').trim();
+    if (!isValidMobile(number)) {
+      mobileError.textContent = 'Enter a valid 10-digit mobile number.';
+      return;
+    }
+
+    mobileError.textContent = '';
+    resetOtpState();
+    otpError.textContent = '';
+    otpInput.value = '';
+    demoOtpCode.textContent = otpCode;
+    mobileScreen.hidden = true;
+    otpScreen.hidden = false;
+    enamScreen.hidden = true;
+    confirmScreen.hidden = true;
+    successScreen.hidden = true;
+    showScreen('otp');
+  });
+
+  resendOtpBtn.addEventListener('click', () => {
+    resetOtpState();
+    otpError.textContent = '';
+    showScreen('otp');
+  });
+
+  verifyOtpBtn.addEventListener('click', () => {
+    if (otpInput.value.trim().length !== 6) {
+      otpError.textContent = 'Enter the 6-digit code.';
+      return;
+    }
+
+    if (otpInput.value.trim() === otpCode) {
+      clearInterval(otpTimerHandle);
+      otpError.textContent = '';
+      showScreen('enam');
+      return;
+    }
+
+    otpAttemptsLeft -= 1;
+    if (otpAttemptsLeft <= 0) {
+      otpError.textContent = 'Too many incorrect attempts. Request a new code.';
+      verifyOtpBtn.disabled = true;
+      resendOtpBtn.disabled = false;
+      return;
+    }
+
+    otpError.textContent = `Incorrect code. ${otpAttemptsLeft} attempt${otpAttemptsLeft === 1 ? '' : 's'} left.`;
+  });
+
+  verifyEnamBtn.addEventListener('click', () => {
+    const id = (enamInput.value || '').trim().toUpperCase();
+    if (!getEnamPattern.test(id)) {
+      enamError.textContent = 'eNAM ID should look like EN followed by 8 digits.';
+      enamStatus.className = 'enam-status';
+      enamStatus.textContent = '';
+      enamProfileCard.hidden = true;
+      return;
+    }
+
+    enamError.textContent = '';
+    enamStatus.className = 'enam-status checking';
+    enamStatus.textContent = 'Checking eNAM registry…';
+    enamProfileCard.hidden = true;
+
+    setTimeout(() => {
+      const match = enamProfiles[id];
+      if (!match) {
+        enamStatus.className = 'enam-status failed';
+        enamStatus.textContent = 'No matching eNAM registration found. Check the ID and try again.';
+        selectedEnam = null;
+        return;
+      }
+
+      selectedEnam = match;
+      enamStatus.className = 'enam-status';
+      enamStatus.textContent = 'eNAM verified';
+      enamProfileCard.hidden = false;
+      enamProfileCard.innerHTML = `
+        <div class='profile-head'>${match.name}</div>
+        <div class='profile-line'>State: ${match.state}</div>
+        <div class='profile-line'>Registered mandi: ${match.mandi}</div>
+        <div class='profile-line'>Produce category: ${match.category}</div>
+      `;
+
+      verifyEnamBtn.textContent = 'Continue to confirm';
+      verifyEnamBtn.closest('.row').appendChild(verifyEnamBtn);
+      showScreen('confirm');
+    }, 700);
+  });
+
+  completeRegistrationBtn.addEventListener('click', () => {
+    if (!selectedEnam) {
+      enamError.textContent = 'Verify your eNAM ID before continuing.';
+      return;
+    }
+
+    const farmerName = selectedEnam.name.split(' ')[0];
+    const farmerId = `KS-F-${Date.now().toString().slice(-6)}`;
+
+    confirmProfileCard.innerHTML = `
+      <div class='profile-head'>${selectedEnam.name}</div>
+      <div class='profile-line'>Phone: +91 ${mobileInput.value}</div>
+      <div class='profile-line'>eNAM ID: ${selectedEnam.enamId}</div>
+      <div class='profile-line'>State: ${selectedEnam.state}</div>
+      <div class='profile-line'>Mandi: ${selectedEnam.mandi}</div>
+      <div class='profile-line'>Village: ${farmVillage.value || 'Farm location not provided'}</div>
+    `;
+
+    successMessage.textContent = `Welcome to Kisaan Setu, ${farmerName}.`;
+    successProfileCard.innerHTML = `
+      <div class='profile-head'>Farmer profile created</div>
+      <div class='profile-line'>Kisaan Setu ID: ${farmerId}</div>
+      <div class='profile-line'>Name: ${selectedEnam.name}</div>
+      <div class='profile-line'>Mobile: +91 ${mobileInput.value}</div>
+      <div class='profile-line'>eNAM ID: ${selectedEnam.enamId}</div>
+      <div class='profile-line'>Mandi: ${selectedEnam.mandi}</div>
+      <div class='profile-line'>Village: ${farmVillage.value || 'Farm location not provided'}</div>
+    `;
+
+    showScreen('success');
+  });
+
+  startOverBtn.addEventListener('click', () => {
+    mobileInput.value = '';
+    mobileError.textContent = '';
+    otpInput.value = '';
+    otpError.textContent = '';
+    otpTimer.textContent = 'Code expires in 60s';
+    enamInput.value = '';
+    enamError.textContent = '';
+    enamStatus.className = 'enam-status';
+    enamStatus.textContent = '';
+    enamProfileCard.hidden = true;
+    farmVillage.value = '';
+    selectedEnam = null;
+    verifyEnamBtn.textContent = 'Verify eNAM ID';
+    clearInterval(otpTimerHandle);
+    showScreen('mobile');
+  });
+}
 document.addEventListener('DOMContentLoaded', () => {
+  installLocaleFetchHeader();
   const body = document.body;
   const menu = document.querySelector('.mobile-menu');
   if (menu) {
@@ -211,6 +630,13 @@ document.addEventListener('DOMContentLoaded', () => {
       body.classList.toggle('mobile-nav-open');
     });
   }
+
+  const notificationButtons = Array.from(document.querySelectorAll('.icon-button'));
+  notificationButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      window.location.href = 'notifications.html';
+    });
+  });
 
   const roleCards = Array.from(document.querySelectorAll('.role-option'));
   roleCards.forEach((card) => {
@@ -241,6 +667,9 @@ document.addEventListener('DOMContentLoaded', () => {
       link.classList.add('active');
     }
   });
+
+  wireFarmerRegistration();
+  wireNegotiationCheckout();
 
   buildLanguageSwitcher();
   bootLanguageFlow().catch((err) => {

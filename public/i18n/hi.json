@@ -15,9 +15,13 @@
   "home.hero.cta.browse_listings": "सूचियां देखें",
 
   "lang.select.title": "अपनी भाषा चुनें",
+  "lang.select.subtitle": "अपने अनुभव के लिए पसंदीदा भाषा चुनें।",
   "lang.hi": "हिंदी",
+  "lang.hi.detail": "हिंदी",
   "lang.en": "English",
+  "lang.en.detail": "अंग्रेज़ी",
   "lang.bn": "বাংলা",
+  "lang.bn.detail": "बंगाली",
 
   "role.select.title": "आप किसान सेतु का उपयोग कैसे करेंगे?",
   "role.buyer": "खरीदार",
@@ -256,6 +260,7 @@
   "common.confirm": "पुष्टि करें",
   "common.back": "वापस",
   "common.next": "आगे",
+  "common.continue": "जारी रखें",
   "common.close": "बंद करें",
   "common.required": "आवश्यक",
   "common.optional": "वैकल्पिक",

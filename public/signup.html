@@ -35,54 +35,123 @@
     <section class="auth-shell">
       <aside class="auth-sidebar">
         <span class="kicker">Kisaan Setu</span>
-        <h1>Join the marketplace.</h1>
-        <p>Choose your role and start sourcing or listing produce directly.</p>
+        <h1>Farmer registration.</h1>
+        <p>Verify your mobile number, eNAM ID, and farm profile before selling produce directly.</p>
         <ul class="mini-list">
-          <li>Farmer listing access</li>
-          <li>Buyer offer and sourcing flow</li>
-          <li>Market negotiation and order tracking</li>
+          <li>Farmer identity check</li>
+          <li>eNAM verification</li>
+          <li>Marketplace profile setup</li>
         </ul>
       </aside>
       <section class="auth-form-wrap">
-        <span class="kicker">Create account</span>
-        <h2>Sign up</h2>
-        <div class="role-grid">
-          <div class="role-option active">
-            <div class="icon">🌾</div>
-            <h3>Farmer</h3>
-            <p>List harvest and negotiate deals.</p>
-          </div>
-          <div class="role-option">
-            <div class="icon">🛒</div>
-            <h3>Buyer</h3>
-            <p>Source produce directly from farmers.</p>
-          </div>
-        </div>
+        <span class="kicker">Create farmer account</span>
+        <h2>Farmer sign up</h2>
 
-        <form data-validate>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="name">Full name</label>
-              <input class="form-control" type="text" id="name" required placeholder="Ramesh Kumar" />
+        <div class="registration-flow">
+          <div class="reg-steps">
+            <div class="reg-step active" data-reg-step="mobile">
+              <span class="reg-step-dot">1</span>
+              <span class="reg-step-label">Mobile</span>
             </div>
-            <div class="form-group">
-              <label for="phone">Phone number</label>
-              <input class="form-control" type="tel" id="phone" required placeholder="+91 98765 43210" />
+            <div class="reg-step-sep"></div>
+            <div class="reg-step" data-reg-step="otp">
+              <span class="reg-step-dot">2</span>
+              <span class="reg-step-label">OTP</span>
             </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input class="form-control" type="email" id="email" required placeholder="name@example.com" />
+            <div class="reg-step-sep"></div>
+            <div class="reg-step" data-reg-step="enam">
+              <span class="reg-step-dot">3</span>
+              <span class="reg-step-label">eNAM</span>
             </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input class="form-control" type="password" id="password" required placeholder="Create password" />
+            <div class="reg-step-sep"></div>
+            <div class="reg-step" data-reg-step="confirm">
+              <span class="reg-step-dot">4</span>
+              <span class="reg-step-label">Confirm</span>
             </div>
           </div>
-          <div class="row">
-            <button class="btn btn-primary" type="submit">Create account</button>
-            <a class="form-link" href="login.html">I already have an account</a>
-          </div>
-        </form>
+
+          <section class="reg-screen" id="mobileScreen">
+            <div class="form-group">
+              <label for="farmerMobile">Mobile number</label>
+              <div class="mobile-input-wrap">
+                <span class="mobile-prefix">+91</span>
+                <input class="form-control" type="tel" id="farmerMobile" inputmode="numeric" maxlength="10" placeholder="98765 43210" />
+              </div>
+              <div class="field-error" id="mobileError"></div>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" id="sendOtpBtn" type="button">Send OTP</button>
+            </div>
+          </section>
+
+          <section class="reg-screen" id="otpScreen" hidden>
+            <div class="demo-banner">
+              Demo mode — your one-time code is <strong id="demoOtpCode">000000</strong>. Production would send it by SMS only.
+            </div>
+
+            <div class="form-group">
+              <label for="farmerOtp">6-digit OTP</label>
+              <input class="form-control text-center" type="text" id="farmerOtp" inputmode="numeric" maxlength="6" placeholder="123456" />
+              <div class="field-error" id="otpError"></div>
+              <div class="timer-row">
+                <span id="otpTimer">Code expires in 60s</span>
+                <button class="link-button" id="resendOtpBtn" type="button">Resend code</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" id="verifyOtpBtn" type="button">Verify & continue</button>
+            </div>
+          </section>
+
+          <section class="reg-screen" id="enamScreen" hidden>
+            <div class="demo-banner">
+              Demo eNAM lookup — try <strong>EN10293847</strong>, <strong>EN55821093</strong>, or <strong>EN77410256</strong>.
+            </div>
+
+            <div class="form-group">
+              <label for="enamId">eNAM registration ID</label>
+              <input class="form-control" type="text" id="enamId" placeholder="EN10293847" />
+              <div class="field-error" id="enamError"></div>
+              <div class="enam-status" id="enamStatus"></div>
+              <div class="profile-card" id="enamProfileCard" hidden></div>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" id="verifyEnamBtn" type="button">Verify eNAM ID</button>
+            </div>
+          </section>
+
+          <section class="reg-screen" id="confirmScreen" hidden>
+            <div class="profile-card confirmation-card" id="confirmProfileCard"></div>
+
+            <div class="form-group">
+              <label for="farmVillage">Village / farm location</label>
+              <input class="form-control" type="text" id="farmVillage" placeholder="Bilaspur village, Raebareli" />
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" id="completeRegistrationBtn" type="button">Complete registration</button>
+            </div>
+          </section>
+
+          <section class="reg-screen" id="successScreen" hidden>
+            <div class="success-wrap">
+              <div class="success-check">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 13l4 4L19 7" stroke="#FBF7EF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div class="success-title">Registration complete</div>
+              <div class="success-subtitle" id="successMessage">Welcome to Kisaan Setu.</div>
+              <div class="profile-card success-profile" id="successProfileCard"></div>
+              <div class="row">
+                <button class="btn btn-secondary" id="startOverBtn" type="button">Register another farmer</button>
+              </div>
+            </div>
+          </section>
+        </div>
       </section>
     </section>
   </main>

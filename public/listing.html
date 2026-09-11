@@ -105,7 +105,7 @@
           </section>
           <section class="chart-card" id="offer">
             <h3>Place offer</h3>
-            <form data-validate>
+            <form data-validate id="offerForm">
               <div class="form-group">
                 <label for="price">Offer price per kg</label>
                 <input class="form-control" type="number" id="price" required placeholder="₹25" />
@@ -122,6 +122,96 @@
             </form>
           </section>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <section class="chart-card negotiated-card" id="negotiatedCheckout">
+          <div class="checkout-head">
+            <div>
+              <span class="kicker">Negotiation confirmed</span>
+              <h3>Finalize negotiated order</h3>
+            </div>
+            <span class="badge accepted">Ready to order</span>
+          </div>
+
+          <div class="negotiated-order-grid">
+            <div class="negotiated-details">
+              <div class="summary-row">
+                <span class="summary-label">Crop</span>
+                <span class="summary-value">Fresh red tomato</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Seller</span>
+                <span class="summary-value">Ramesh Kumar</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Negotiated price</span>
+                <span class="summary-value" id="negotiatedPrice">₹25 / kg</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Quantity</span>
+                <span class="summary-value" id="negotiatedQuantity">20 quintals</span>
+              </div>
+              <div class="summary-row total-row">
+                <span class="summary-label">Order total</span>
+                <span class="summary-value" id="negotiatedTotal">₹50,000</span>
+              </div>
+            </div>
+
+            <div class="payment-choice">
+              <div class="payment-choice-title">Payment method</div>
+              <label class="method-option">
+                <input type="radio" name="paymentMethod" value="online" checked />
+                <span>Online payment</span>
+              </label>
+              <label class="method-option">
+                <input type="radio" name="paymentMethod" value="cod" />
+                <span>Cash on delivery</span>
+              </label>
+
+              <button class="btn btn-primary place-order" id="placeOrderBtn" type="button">
+                Place negotiated order
+              </button>
+              <div class="gateway-message" id="gatewayMessage"></div>
+            </div>
+
+            <section class="receipt-panel" id="receiptPanel" hidden>
+              <div class="receipt-panel-title">Payment receipt</div>
+              <div class="receipt-grid">
+                <div>
+                  <span class="receipt-label">Order ID</span>
+                  <span class="receipt-value" id="receiptOrderId">—</span>
+                </div>
+                <div>
+                  <span class="receipt-label">Date</span>
+                  <span class="receipt-value" id="receiptDate">—</span>
+                </div>
+                <div>
+                  <span class="receipt-label">Payment method</span>
+                  <span class="receipt-value" id="receiptMethod">—</span>
+                </div>
+                <div>
+                  <span class="receipt-label">Transaction ID</span>
+                  <span class="receipt-value" id="receiptTransaction">—</span>
+                </div>
+                <div>
+                  <span class="receipt-label">Status</span>
+                  <span class="receipt-value" id="receiptStatus">—</span>
+                </div>
+                <div>
+                  <span class="receipt-label">Total paid</span>
+                  <span class="receipt-value" id="receiptTotal">—</span>
+                </div>
+              </div>
+              <div class="receipt-actions">
+                <button class="btn btn-secondary" id="downloadReceiptBtn" type="button">Download receipt</button>
+                <button class="btn btn-ghost" id="newOrderBtn" type="button">New order</button>
+              </div>
+            </section>
+          </div>
+        </section>
       </div>
     </section>
   </main>

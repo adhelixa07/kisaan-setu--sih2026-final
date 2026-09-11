@@ -15,9 +15,13 @@
   "home.hero.cta.browse_listings": "Browse listings",
 
   "lang.select.title": "Choose your language",
+  "lang.select.subtitle": "Select the language you prefer for your experience.",
   "lang.hi": "हिंदी",
+  "lang.hi.detail": "Hindi",
   "lang.en": "English",
+  "lang.en.detail": "English",
   "lang.bn": "বাংলা",
+  "lang.bn.detail": "Bengali",
 
   "role.select.title": "How will you use Kisaan Setu?",
   "role.buyer": "Buyer",
@@ -256,6 +260,7 @@
   "common.confirm": "Confirm",
   "common.back": "Back",
   "common.next": "Next",
+  "common.continue": "Continue",
   "common.close": "Close",
   "common.required": "Required",
   "common.optional": "Optional",
