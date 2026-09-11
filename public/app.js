@@ -380,6 +380,365 @@ function escapeHtml(value) {
   return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+function readSession() {
+  try {
+    return JSON.parse(localStorage.getItem('ks_session') || 'null');
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveSession(session) {
+  try {
+    localStorage.setItem('ks_session', JSON.stringify(session));
+  } catch (e) {
+    console.warn('[session] save failed', e);
+  }
+}
+
+function clearSession() {
+  try {
+    localStorage.removeItem('ks_session');
+  } catch (e) {
+    console.warn('[session] clear failed', e);
+  }
+}
+
+function syncLoginState() {
+  const user = readSession();
+  const loginLinks = Array.from(document.querySelectorAll('a[href="login.html"]'));
+  const loginButtons = Array.from(document.querySelectorAll('button[data-login-button]'));
+  loginLinks.forEach((link) => {
+    link.style.display = user ? 'none' : '';
+  });
+  loginButtons.forEach((button) => {
+    button.style.display = user ? 'none' : '';
+  });
+
+  const navActions = document.querySelector('.nav-actions');
+  if (navActions && user && !navActions.querySelector('#logoutBtn')) {
+    const logout = document.createElement('button');
+    logout.type = 'button';
+    logout.id = 'logoutBtn';
+    logout.className = 'btn btn-secondary';
+    logout.textContent = 'Logout';
+    logout.addEventListener('click', () => {
+      clearSession();
+      localStorage.removeItem('ks_token');
+      localStorage.removeItem('ks_user');
+      location.href = 'login.html';
+    });
+    navActions.appendChild(logout);
+  }
+
+  if (navActions && !user && navActions.querySelector('#logoutBtn')) {
+    navActions.querySelector('#logoutBtn').remove();
+  }
+
+  // Dashboard links stay available as static entry points again while auth is being
+  // worked out separately in the backend and database layers.
+}
+
+function wireLoginFlow() {
+  const form = document.getElementById('loginForm');
+  if (!form) return;
+
+  const input = document.getElementById('email');
+  const password = document.getElementById('password');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!input.value.trim() || !password.value.trim()) {
+      alert('Enter your email or phone and password.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emailOrPhone: input.value.trim(),
+          password: password.value.trim()
+        })
+      });
+
+      const data = await response.json().catch(() => ({ ok: false, message: 'Login failed' }));
+      if (!response.ok || !data.ok) {
+        alert(data.message || 'Invalid credentials.');
+        return;
+      }
+
+      const role = data.user && data.user.role ? data.user.role : 'farmer';
+      const session = {
+        id: data.session && data.session.id ? data.session.id : `session-${Date.now()}`,
+        token: data.token || '',
+        userId: data.user && data.user._id ? data.user._id : data.user && data.user.id,
+        name: data.user && data.user.name ? data.user.name : input.value.trim(),
+        email: data.user && data.user.email ? data.user.email : input.value.trim(),
+        phone: data.user && data.user.phone ? data.user.phone : '',
+        role,
+        status: data.user && data.user.status ? data.user.status : 'pending',
+        createdAt: new Date().toISOString(),
+        loggedInAt: new Date().toISOString(),
+        expiresAt: data.session && data.session.expiresAt ? data.session.expiresAt : ''
+      };
+
+      saveSession(session);
+      if (data.token) {
+        localStorage.setItem('ks_token', data.token);
+      }
+      if (data.user) {
+        localStorage.setItem('ks_user', JSON.stringify(data.user));
+      }
+
+      syncLoginState();
+      if (role === 'admin') window.location.href = 'admin.html';
+      else if (role === 'farmer') window.location.href = 'farmer-dashboard.html';
+      else if (role === 'buyer') window.location.href = 'buyer-dashboard.html';
+      else window.location.href = 'index.html';
+    } catch (error) {
+      console.warn('[login] failed', error);
+      alert('Could not contact the server. Try again.');
+    }
+  });
+}
+
+function guardRolePages() {
+  // Keep the dashboard HTML files in the static site visible again. The auth layer
+  // is still mounted on the API side, but the dashboard route screens should not be
+  // redirected through a forced login check during the current UI repair pass.
+}
+
+function wireNegotiationCheckout() {
+  const offerForm = document.getElementById('offerForm');
+  const negotiatedCard = document.getElementById('negotiatedCheckout');
+  const price = document.getElementById('price');
+  const quantity = document.getElementById('quantity');
+  const note = document.getElementById('note');
+  const negotiatedPrice = document.getElementById('negotiatedPrice');
+  const negotiatedQuantity = document.getElementById('negotiatedQuantity');
+  const negotiatedTotal = document.getElementById('negotiatedTotal');
+  const gatewayMessage = document.getElementById('gatewayMessage');
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  const receiptPanel = document.getElementById('receiptPanel');
+  const receiptOrderId = document.getElementById('receiptOrderId');
+  const receiptDate = document.getElementById('receiptDate');
+  const receiptMethod = document.getElementById('receiptMethod');
+  const receiptTransaction = document.getElementById('receiptTransaction');
+  const receiptStatus = document.getElementById('receiptStatus');
+  const receiptTotal = document.getElementById('receiptTotal');
+  const downloadReceiptBtn = document.getElementById('downloadReceiptBtn');
+  const newOrderBtn = document.getElementById('newOrderBtn');
+
+  if (!offerForm || !negotiatedCard || !price || !quantity || !note || !negotiatedPrice || !negotiatedQuantity || !negotiatedTotal || !placeOrderBtn || !gatewayMessage || !receiptPanel || !receiptOrderId || !receiptDate || !receiptMethod || !receiptTransaction || !receiptStatus || !receiptTotal || !downloadReceiptBtn || !newOrderBtn) return;
+
+  const updateNegotiatedValues = () => {
+    const priceValue = Number(price.value || 25);
+    const quantityValue = Number(quantity.value || 20);
+    const total = priceValue * quantityValue * 100;
+
+    negotiatedPrice.textContent = `₹${priceValue} / kg`;
+    negotiatedQuantity.textContent = `${quantityValue} quintals`;
+    negotiatedTotal.textContent = `₹${Math.round(total).toLocaleString('en-IN')}`;
+  };
+
+  const resetReceipt = () => {
+    receiptPanel.hidden = true;
+    placeOrderBtn.disabled = false;
+    placeOrderBtn.textContent = 'Place negotiated order';
+    gatewayMessage.textContent = '';
+  };
+
+  const showReceipt = (receipt) => {
+    const date = new Date().toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    receiptOrderId.textContent = receipt.orderId;
+    receiptDate.textContent = date;
+    receiptMethod.textContent = receipt.method;
+    receiptTransaction.textContent = receipt.transactionId;
+    receiptStatus.textContent = receipt.status;
+    receiptTotal.textContent = `₹${Math.round(receipt.total).toLocaleString('en-IN')}`;
+
+    receiptPanel.hidden = false;
+    negotiatedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  price.addEventListener('input', updateNegotiatedValues);
+  quantity.addEventListener('input', updateNegotiatedValues);
+
+  offerForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!price.value || !quantity.value || !note.value.trim()) {
+      alert('Complete the offer form before negotiating.');
+      return;
+    }
+
+    const priceValue = Number(price.value);
+    const quantityValue = Number(quantity.value);
+    if (priceValue <= 0 || quantityValue <= 0) {
+      alert('Enter a valid price and quantity.');
+      return;
+    }
+
+    updateNegotiatedValues();
+    gatewayMessage.textContent = 'Negotiation recorded. Review totals and place the order.';
+    negotiatedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  newOrderBtn.addEventListener('click', () => {
+    resetReceipt();
+    receiptPanel.hidden = true;
+    note.value = '';
+    price.value = '';
+    quantity.value = '';
+    negotiatedPrice.textContent = '₹25 / kg';
+    negotiatedQuantity.textContent = '20 quintals';
+    negotiatedTotal.textContent = '₹50,000';
+    gatewayMessage.textContent = 'Ready for a new negotiated order.';
+  });
+
+  downloadReceiptBtn.addEventListener('click', () => {
+    const receiptLines = [
+      'KISAAN SETU — PAYMENT RECEIPT',
+      '--------------------------------',
+      `Order ID: ${receiptOrderId.textContent}`,
+      `Date: ${receiptDate.textContent}`,
+      `Payment method: ${receiptMethod.textContent}`,
+      `Status: ${receiptStatus.textContent}`,
+      `Transaction ID: ${receiptTransaction.textContent}`,
+      '',
+      `Total paid: ${receiptTotal.textContent}`
+    ];
+
+    const blob = new Blob([receiptLines.join('\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${receiptOrderId.textContent || 'receipt'}-receipt.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  placeOrderBtn.addEventListener('click', async () => {
+    const selectedMethod = Array.from(document.querySelectorAll('[name="paymentMethod"]:checked')).map((el) => el.value)[0] || 'online';
+    const priceValue = Number(price.value || 25);
+    const quantityValue = Number(quantity.value || 20);
+    const total = Math.round(priceValue * quantityValue * 100);
+
+    if (!price.value || !quantity.value || !note.value.trim()) {
+      gatewayMessage.textContent = 'Complete the negotiated offer details first.';
+      return;
+    }
+
+    if (selectedMethod === 'cod') {
+      const orderId = `KS-${Date.now().toString().slice(-8)}`;
+      showReceipt({
+        orderId,
+        method: 'Cash on Delivery',
+        status: 'Pay on Delivery',
+        transactionId: '—',
+        total
+      });
+      gatewayMessage.textContent = `Cash on delivery order ${orderId} confirmed.`;
+      placeOrderBtn.textContent = 'Order confirmed';
+      placeOrderBtn.disabled = true;
+      return;
+    }
+
+    const ok = await loadRazorpayScript();
+    if (!ok || !window.Razorpay) {
+      gatewayMessage.textContent = 'Could not load Razorpay. Check your connection and try again.';
+      return;
+    }
+
+    const orderId = `KS-${Date.now().toString().slice(-8)}`;
+    const options = {
+      key: 'rzp_test_1DP5mmOlF5G5ag',
+      amount: total,
+      currency: 'INR',
+      name: 'Kisaan Setu',
+      description: `Negotiated order ${orderId}`,
+      notes: { order_id: orderId },
+      theme: { color: '#1F4D2E' },
+      handler(response) {
+        gatewayMessage.textContent = `Payment successful. Order ${orderId} is confirmed.`;
+        placeOrderBtn.textContent = 'Payment confirmed';
+        placeOrderBtn.disabled = true;
+
+        showReceipt({
+          orderId,
+          method: 'Online Payment',
+          status: 'Paid',
+          transactionId: response.razorpay_payment_id,
+          total
+        });
+      },
+      modal: {
+        ondismiss: () => {
+          gatewayMessage.textContent = 'Payment was dismissed before confirmation.';
+        }
+      },
+      prefill: { name: '', email: '', contact: '' }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', (response) => {
+      gatewayMessage.textContent = `Payment failed: ${response.error.description || 'please try again.'}`;
+    });
+    rzp.open();
+  });
+}
+
+function wireListingCreatePersister() {
+  const form = document.getElementById('listingCreateForm');
+  if (!form) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      farmerId: 'demo-farmer',
+      userId: 'demo-farmer',
+      crop: document.getElementById('crop').value,
+      category: document.getElementById('crop').value,
+      variety: document.getElementById('crop').value,
+      quantity: document.getElementById('quantity').value,
+      unit: document.getElementById('unit').value,
+      price: document.getElementById('price').value,
+      quality: document.getElementById('quality').value,
+      harvest: document.getElementById('harvest').value,
+      location: document.getElementById('location').value,
+      details: document.getElementById('details').value
+    };
+
+    try {
+      const response = await fetch('/api/listings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        console.warn('[listing] persist failed', json);
+        return;
+      }
+      alert('Listing saved in local database store.');
+      form.reset();
+    } catch (err) {
+      console.warn('[listing] persist failed', err);
+      alert('Listing failed to persist.');
+    }
+  });
+}
+
 function wireFarmerRegistration() {
   const mobileScreen = document.getElementById('mobileScreen');
   if (!mobileScreen) return;
@@ -670,6 +1029,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   wireFarmerRegistration();
   wireNegotiationCheckout();
+  wireListingCreatePersister();
+  wireLoginFlow();
+  syncLoginState();
 
   buildLanguageSwitcher();
   bootLanguageFlow().catch((err) => {

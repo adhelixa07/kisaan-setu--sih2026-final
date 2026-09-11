@@ -1,0 +1,23 @@
+{
+  "name": "kisaan-setu",
+  "version": "1.0.0",
+  "private": true,
+  "main": "backend/app.js",
+  "scripts": {
+    "start": "node backend/app.js",
+    "test": "node --check public/app.js && node --check backend/app.js && node --check backend/services/persistence.js && node --check backend/middleware/auth.js && node --check models/Farmer.js && node --check models/Order.js && node --check models/OtpSession.js && node --test tests/login-password.test.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.4",
+    "morgan": "^1.10.0",
+    "razorpay": "^2.9.4"
+  }
+}
